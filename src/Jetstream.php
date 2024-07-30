@@ -187,6 +187,16 @@ class Jetstream
     }
 
     /**
+     * Determine if Jetstream is supporting OAuth features.
+     *
+     * @return bool
+     */
+    public static function hasOAuthFeatures()
+    {
+        return Features::hasOAuthFeatures();
+    }
+
+    /**
      * Determine if Jetstream is supporting team features.
      *
      * @return bool

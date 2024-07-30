@@ -14,12 +14,14 @@ use Illuminate\View\Compilers\BladeCompiler;
 use Inertia\Inertia;
 use Laravel\Fortify\Events\PasswordUpdatedViaController;
 use Laravel\Fortify\Fortify;
-use Laravel\Jetstream\Http\Livewire\ApiTokenManager;
+use Laravel\Jetstream\Http\Livewire\ApiTokenManager as SanctumApiTokenManager;
 use Laravel\Jetstream\Http\Livewire\CreateTeamForm;
 use Laravel\Jetstream\Http\Livewire\DeleteTeamForm;
 use Laravel\Jetstream\Http\Livewire\DeleteUserForm;
 use Laravel\Jetstream\Http\Livewire\LogoutOtherBrowserSessionsForm;
 use Laravel\Jetstream\Http\Livewire\NavigationMenu;
+use Laravel\Jetstream\Http\Livewire\OAuthAppManager;
+use Laravel\Jetstream\Http\Livewire\PassportApiTokenManager;
 use Laravel\Jetstream\Http\Livewire\TeamMemberManager;
 use Laravel\Jetstream\Http\Livewire\TwoFactorAuthenticationForm;
 use Laravel\Jetstream\Http\Livewire\UpdatePasswordForm;
@@ -90,7 +92,13 @@ class JetstreamServiceProvider extends ServiceProvider
             Livewire::component('profile.delete-user-form', DeleteUserForm::class);
 
             if (Features::hasApiFeatures()) {
-                Livewire::component('api.api-token-manager', ApiTokenManager::class);
+                Livewire::component('api.api-token-manager',
+                    Features::hasOAuthFeatures() ? PassportApiTokenManager::class : SanctumApiTokenManager::class
+                );
+            }
+
+            if (Features::hasOAuthFeatures()) {
+                Livewire::component('oauth.oauth-app-manager', OAuthAppManager::class);
             }
 
             if (Features::hasTeamFeatures()) {

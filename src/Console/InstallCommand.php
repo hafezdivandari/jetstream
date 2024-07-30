@@ -33,6 +33,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
                                               {--dark : Indicate that dark mode support should be installed}
                                               {--teams : Indicates if team support should be installed}
                                               {--api : Indicates if API support should be installed}
+                                              {--oauth : Indicates if OAuth support via Laravel Passport should be installed}
                                               {--verification : Indicates if email verification support should be installed}
                                               {--pest : Indicates if Pest should be installed}
                                               {--ssr : Indicates if Inertia SSR support should be installed}
@@ -85,6 +86,12 @@ class InstallCommand extends Command implements PromptsForMissingInput
         // Configure API...
         if ($this->option('api')) {
             $this->replaceInFile('// Features::api(),', 'Features::api(),', config_path('jetstream.php'));
+        }
+
+        // Configure OAuth...
+        if ($this->option('oauth')) {
+            $this->replaceInFile('// Features::oauth(),', 'Features::oauth(),', config_path('jetstream.php'));
+            $this->replaceInFile('sanctum', 'web', config_path('jetstream.php'));
         }
 
         // Configure Email Verification...
@@ -156,6 +163,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
 
         $this->call('install:api', [
             '--without-migration-prompt' => true,
+            '--passport' => $this->option('oauth'),
         ]);
 
         // Update Configuration...
@@ -202,6 +210,10 @@ class InstallCommand extends Command implements PromptsForMissingInput
         // Models...
         copy(__DIR__.'/../../stubs/app/Models/User.php', app_path('Models/User.php'));
 
+        if ($this->option('oauth')) {
+            $this->replaceInFile('Laravel\Sanctum\HasApiTokens', 'Laravel\Passport\HasApiTokens', app_path('Models/User.php'));
+        }
+
         // Factories...
         copy(__DIR__.'/../../database/factories/UserFactory.php', base_path('database/factories/UserFactory.php'));
 
@@ -227,9 +239,15 @@ class InstallCommand extends Command implements PromptsForMissingInput
         copy(__DIR__.'/../../stubs/livewire/resources/views/policy.blade.php', resource_path('views/policy.blade.php'));
 
         // Other Views...
-        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/livewire/resources/views/api', resource_path('views/api'));
         (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/livewire/resources/views/profile', resource_path('views/profile'));
         (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/livewire/resources/views/auth', resource_path('views/auth'));
+        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/livewire/resources/views/oauth', resource_path('views/oauth'));
+
+        if ($this->option('oauth')) {
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/livewire/resources/views/passport-api', resource_path('views/api'));
+        } else {
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/livewire/resources/views/api', resource_path('views/api'));
+        }
 
         if (! Str::contains(file_get_contents(base_path('routes/web.php')), "'/dashboard'")) {
             (new Filesystem)->append(base_path('routes/web.php'), $this->livewireRouteDefinition());
@@ -316,7 +334,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
         return <<<'EOF'
 
 Route::middleware([
-    'auth:sanctum',
+    config('jetstream.guard') ? 'auth:'.config('jetstream.guard') : 'auth',
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
@@ -342,6 +360,7 @@ EOF;
 
         $this->call('install:api', [
             '--without-migration-prompt' => true,
+            '--passport' => $this->option('oauth'),
         ]);
 
         // Install NPM packages...
@@ -405,6 +424,10 @@ EOF;
         // Models...
         copy(__DIR__.'/../../stubs/app/Models/User.php', app_path('Models/User.php'));
 
+        if ($this->option('oauth')) {
+            $this->replaceInFile('Laravel\Sanctum\HasApiTokens', 'Laravel\Passport\HasApiTokens', app_path('Models/User.php'));
+        }
+
         // Factories...
         copy(__DIR__.'/../../database/factories/UserFactory.php', base_path('database/factories/UserFactory.php'));
 
@@ -428,9 +451,15 @@ EOF;
 
         (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia/resources/js/Components', resource_path('js/Components'));
         (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia/resources/js/Layouts', resource_path('js/Layouts'));
-        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia/resources/js/Pages/API', resource_path('js/Pages/API'));
         (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia/resources/js/Pages/Auth', resource_path('js/Pages/Auth'));
         (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia/resources/js/Pages/Profile', resource_path('js/Pages/Profile'));
+        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia/resources/js/Pages/OAuth', resource_path('js/Pages/OAuth'));
+
+        if ($this->option('oauth')) {
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia/resources/js/Pages/PassportAPI', resource_path('js/Pages/API'));
+        } else {
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia/resources/js/Pages/API', resource_path('js/Pages/API'));
+        }
 
         copy(__DIR__.'/../../stubs/inertia/routes/web.php', base_path('routes/web.php'));
 
@@ -536,6 +565,10 @@ EOF;
         copy(__DIR__.'/../../stubs/app/Models/Team.php', app_path('Models/Team.php'));
         copy(__DIR__.'/../../stubs/app/Models/TeamInvitation.php', app_path('Models/TeamInvitation.php'));
         copy(__DIR__.'/../../stubs/app/Models/UserWithTeams.php', app_path('Models/User.php'));
+
+        if ($this->option('oauth')) {
+            $this->replaceInFile('Laravel\Sanctum\HasApiTokens', 'Laravel\Passport\HasApiTokens', app_path('Models/User.php'));
+        }
 
         // Actions...
         copy(__DIR__.'/../../stubs/app/Actions/Jetstream/AddTeamMember.php', app_path('Actions/Jetstream/AddTeamMember.php'));
@@ -854,6 +887,7 @@ EOF;
             options: collect([
                 'teams' => 'Team support',
                 'api' => 'API support',
+                'oauth' => 'OAuth support via Laravel Passport',
                 'verification' => 'Email verification',
                 'dark' => 'Dark mode',
             ])->when(
