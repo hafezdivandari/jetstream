@@ -3,8 +3,8 @@
 namespace Laravel\Jetstream;
 
 use Illuminate\Support\Str;
-use Laravel\Sanctum\HasApiTokens as SanctumHasApiTokens;
 use Laravel\Passport\HasApiTokens as PassportHasApiTokens;
+use Laravel\Sanctum\HasApiTokens as SanctumHasApiTokens;
 
 trait HasTeams
 {
