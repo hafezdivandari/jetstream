@@ -22,7 +22,7 @@ class OAuthAppController extends Controller
      */
     public function index(Request $request)
     {
-        return Jetstream::inertia()->render($request, 'API/Index', [
+        return Jetstream::inertia()->render($request, 'OAuth/Index', [
             'authorizedApps' => $request->user()->tokens()
                 ->with('client')
                 ->where('revoked', false)

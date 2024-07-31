@@ -51,9 +51,9 @@ Route::group(['middleware' => config('jetstream.middleware', ['web'])], function
             // API...
             if (Jetstream::hasApiFeatures()) {
                 if (Jetstream::hasOAuthFeatures()) {
-                    Route::get('/user/api-tokens', [SanctumApiTokenController::class, 'index'])->name('api-tokens.index');
-                    Route::post('/user/api-tokens', [SanctumApiTokenController::class, 'store'])->name('api-tokens.store');
-                    Route::delete('/user/api-tokens/{token}', [SanctumApiTokenController::class, 'destroy'])->name('api-tokens.destroy');
+                    Route::get('/user/api-tokens', [PassportApiTokenController::class, 'index'])->name('api-tokens.index');
+                    Route::post('/user/api-tokens', [PassportApiTokenController::class, 'store'])->name('api-tokens.store');
+                    Route::delete('/user/api-tokens/{token}', [PassportApiTokenController::class, 'destroy'])->name('api-tokens.destroy');
                 } else {
                     Route::get('/user/api-tokens', [SanctumApiTokenController::class, 'index'])->name('api-tokens.index');
                     Route::post('/user/api-tokens', [SanctumApiTokenController::class, 'store'])->name('api-tokens.store');
@@ -68,6 +68,8 @@ Route::group(['middleware' => config('jetstream.middleware', ['web'])], function
                 Route::post('/user/oauth-apps', [OAuthAppController::class, 'store'])->name('oauth-apps.store');
                 Route::put('/user/oauth-apps/{app}', [OAuthAppController::class, 'update'])->name('oauth-apps.update');
                 Route::delete('/user/oauth-apps/{app}', [OAuthAppController::class, 'destroy'])->name('oauth-apps.destroy');
+
+                Route::get('/user/oauth-connections', [OAuthConnectionController::class, 'index'])->name('oauth-connections.index');
                 Route::delete('/user/oauth-connections/{app}', [OAuthConnectionController::class, 'destroy'])->name('oauth-connections.destroy');
             }
 
