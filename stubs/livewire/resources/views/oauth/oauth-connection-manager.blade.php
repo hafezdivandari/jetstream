@@ -1,5 +1,5 @@
 <div>
-    @if ($this->authorizedApps->isNotEmpty())
+    @if ($this->connections->isNotEmpty())
         <!-- Manage OAuth Connections -->
         <div class="mt-10 sm:mt-0">
             <x-action-section>

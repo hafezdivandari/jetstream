@@ -68,7 +68,7 @@ class OAuthConnectionManager extends Component
             ->reject(fn (Token $token) => $token->client->revoked || $token->client->hasGrantType('personal_access'))
             ->groupBy('client_id')
             ->map(fn ($tokens) => [
-                'client' => $tokens->first->client,
+                'client' => $tokens->first()->client,
                 'scopes' => $tokens->pluck('scopes')->flatten()->unique()->all(),
                 'tokens_count' => $tokens->count(),
             ]);
