@@ -71,7 +71,7 @@ class PassportApiTokenManager extends Component
             ->where('revoked', false)
             ->where('expires_at', '>', Date::now())
             ->get()
-            ->filter(fn ($token) => $token->client->personal_access_client);
+            ->filter(fn ($token) => $token->client->hasGrantType('personal_access'));
     }
 
     /**

@@ -69,7 +69,6 @@ Route::group(['middleware' => config('jetstream.middleware', ['web'])], function
                 Route::put('/user/oauth-apps/{app}', [OAuthAppController::class, 'update'])->name('oauth-apps.update');
                 Route::delete('/user/oauth-apps/{app}', [OAuthAppController::class, 'destroy'])->name('oauth-apps.destroy');
 
-                Route::get('/user/oauth-connections', [OAuthConnectionController::class, 'index'])->name('oauth-connections.index');
                 Route::delete('/user/oauth-connections/{app}', [OAuthConnectionController::class, 'destroy'])->name('oauth-connections.destroy');
             }
 

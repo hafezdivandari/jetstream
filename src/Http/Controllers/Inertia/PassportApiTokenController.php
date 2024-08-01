@@ -25,7 +25,7 @@ class PassportApiTokenController extends Controller
                 ->where('revoked', false)
                 ->where('expires_at', '>', Date::now())
                 ->get()
-                ->filter(fn (Token $token) => $token->client->personal_access_client)
+                ->filter(fn (Token $token) => $token->client->hasGrantType('personal_access'))
                 ->map(fn (Token $token) => $token->toArray() + [
                     'issued_ago' => $token->created_at->diffForHumans(),
                     'expires_in' => $token->expires_at->longAbsoluteDiffForHumans(),

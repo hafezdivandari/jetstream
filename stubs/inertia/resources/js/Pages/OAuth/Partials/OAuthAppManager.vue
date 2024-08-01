@@ -16,8 +16,7 @@ import SectionBorder from '@/Components/SectionBorder.vue';
 import TextInput from '@/Components/TextInput.vue';
 
 const props = defineProps({
-    authorizedApps: Array,
-    oauthApps: Array,
+    apps: Array,
 });
 
 const createOAuthAppForm = useForm({
@@ -33,12 +32,9 @@ const updateOAuthAppForm = useForm({
 
 const deleteOAuthAppForm = useForm({});
 
-const revokeAuthorizedAppForm = useForm({});
-
 const displayingClientCredentials = ref(false);
 const oauthAppBeingManaged = ref(null);
 const oauthAppBeingDeleted = ref(null);
-const authorizedAppBeingRevoked = ref(null);
 
 const createOAuthApp = () => {
     createOAuthAppForm.post(route('oauth-apps.store'), {
@@ -75,65 +71,10 @@ const deleteOAuthApp = () => {
         onSuccess: () => (oauthAppBeingDeleted.value = null),
     });
 };
-
-const confirmAuthorizedAppRevocation = (app) => {
-    authorizedAppBeingRevoked.value = app;
-};
-
-const revokeAuthorizedApp = () => {
-    revokeAuthorizedAppForm.delete(route('oauth-connections.destroy', authorizedAppBeingRevoked.value), {
-        preserveScroll: true,
-        preserveState: true,
-        onSuccess: () => (authorizedAppBeingRevoked.value = null),
-    });
-};
 </script>
 
 <template>
     <div>
-        <div v-if="authorizedApps.length > 0">
-            <!-- Manage Authorized Apps -->
-            <div class="mt-10 sm:mt-0">
-                <ActionSection>
-                    <template #title>
-                        Manage Authorized Apps
-                    </template>
-
-                    <template #description>
-                        Keep track of your connections to third-party apps and services.
-                    </template>
-
-                    <!-- Authorized App List -->
-                    <template #content>
-                        <div class="space-y-6">
-                            <div v-for="(app, id) in authorizedApps" :key="id" class="flex items-center justify-between">
-                                <div>
-                                    <div>
-                                        {{ app.client.name }}
-                                    </div>
-                                    <div class="text-sm italic text-gray-500">
-                                        {{ app.scopes.join(', ') }}
-                                    </div>
-                                </div>
-
-                                <div class="flex items-center ms-2">
-                                    <div class="text-sm text-gray-400">
-                                        {{ app.tokens_count }} Tokens
-                                    </div>
-
-                                    <button class="cursor-pointer ms-6 text-sm text-red-500" @click="confirmAuthorizedAppRevocation(app)">
-                                        Revoke
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </template>
-                </ActionSection>
-            </div>
-
-            <SectionBorder />
-        </div>
-
         <!-- Register OAuth App -->
         <FormSection @submitted="createOAuthApp">
             <template #title>
@@ -193,7 +134,7 @@ const revokeAuthorizedApp = () => {
             </template>
         </FormSection>
 
-        <div v-if="oauthApps.length > 0">
+        <div v-if="apps.length > 0">
             <SectionBorder />
 
             <!-- Manage OAuth Apps -->
@@ -210,7 +151,7 @@ const revokeAuthorizedApp = () => {
                     <!-- OAuth App List -->
                     <template #content>
                         <div class="space-y-6">
-                            <div v-for="app in oauthApps" :key="app.id" class="flex items-center justify-between">
+                            <div v-for="app in apps" :key="app.id" class="flex items-center justify-between">
                                 <div class="dark:text-white">
                                     {{ app.name }}
                                     <span class="text-sm italic text-gray-400">
@@ -370,32 +311,6 @@ const revokeAuthorizedApp = () => {
                     @click="deleteOAuthApp"
                 >
                     Delete
-                </DangerButton>
-            </template>
-        </ConfirmationModal>
-
-        <!-- Revoke Authorized App Confirmation Modal -->
-        <ConfirmationModal :show="authorizedAppBeingRevoked != null" @close="authorizedAppBeingRevoked = null">
-            <template #title>
-                Revoke Authorized App
-            </template>
-
-            <template #content>
-                Are you sure you would like to revoke this app?
-            </template>
-
-            <template #footer>
-                <SecondaryButton @click="authorizedAppBeingRevoked = null">
-                    Cancel
-                </SecondaryButton>
-
-                <DangerButton
-                    class="ms-3"
-                    :class="{ 'opacity-25': revokeAuthorizedAppForm.processing }"
-                    :disabled="revokeAuthorizedAppForm.processing"
-                    @click="revokeAuthorizedApp"
-                >
-                    Revoke
                 </DangerButton>
             </template>
         </ConfirmationModal>

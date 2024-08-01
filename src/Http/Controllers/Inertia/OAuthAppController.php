@@ -4,7 +4,6 @@ namespace Laravel\Jetstream\Http\Controllers\Inertia;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Date;
 use Laravel\Jetstream\Jetstream;
 use Laravel\Passport\Client;
@@ -23,36 +22,20 @@ class OAuthAppController extends Controller
     public function index(Request $request)
     {
         return Jetstream::inertia()->render($request, 'OAuth/Index', [
-            'authorizedApps' => $request->user()->tokens()
+            'connections' => $request->user()->tokens()
                 ->with('client')
                 ->where('revoked', false)
                 ->where('expires_at', '>', Date::now())
                 ->get()
-                ->reduce(function (Collection $apps, Token $token) {
-                    if ($token->client->revoked || $token->client->personal_access_client) {
-                        return $apps;
-                    }
-
-                    $app = $apps->get($token->client_id);
-
-                    if ($app) {
-                        $app['scopes'] = array_unique(array_merge($app['scopes'], $token->scopes));
-                        $app['tokens_count'] += 1;
-
-                        $apps->put($token->client_id, $app);
-                    } else {
-                        $apps->put($token->client_id, [
-                            'client' => $token->client,
-                            'scopes' => $token->scopes,
-                            'tokens_count' => 1,
-                        ]);
-                    }
-
-                    return $apps;
-                }, collect()),
-            'oauthApps' => $request->user()->clients()
+                ->reject(fn (Token $token) => $token->client->revoked || $token->client->hasGrantType('personal_access'))
+                ->groupBy('client_id')
+                ->map(fn ($tokens) => [
+                    'client' => $tokens->first->client,
+                    'scopes' => $tokens->pluck('scopes')->flatten()->unique()->all(),
+                    'tokens_count' => $tokens->count(),
+                ]),
+            'apps' => $request->user()->clients()
                 ->where('revoked', false)
-                ->orderBy('name', 'asc')
                 ->get()
                 ->map(fn (Client $client) => $client->toArray() + [
                     'is_confidential' => $client->confidential(),
@@ -102,7 +85,14 @@ class OAuthAppController extends Controller
      */
     public function destroy(Request $request, $clientId)
     {
-        $request->user()->clients()->find($clientId)->delete();
+        $client = $request->user()->clients()->find($clientId);
+
+        $client->tokens()->each(function (Token $token) {
+            $token->refreshToken->revoke();
+            $token->revoke();
+        });
+
+        $client->revoke();
 
         return back(303);
     }

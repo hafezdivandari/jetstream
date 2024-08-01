@@ -1,49 +1,4 @@
 <div>
-    @if ($this->authorizedApps->isNotEmpty())
-        <!-- Manage Authorized Apps -->
-        <div class="mt-10 sm:mt-0">
-            <x-action-section>
-                <x-slot name="title">
-                    {{ __('Manage Authorized Apps') }}
-                </x-slot>
-
-                <x-slot name="description">
-                    {{ __('Keep track of your connections to third-party apps and services.') }}
-                </x-slot>
-
-                <!-- Authorized App List -->
-                <x-slot name="content">
-                    <div class="space-y-6">
-                        @foreach ($this->authorizedApps as $id => $app)
-                            <div class="flex items-center justify-between" wire:key="{{ $id }}">
-                                <div>
-                                    <div>
-                                        {{ $app['client']->name }}
-                                    </div>
-                                    <div class="text-sm italic text-gray-500">
-                                        {{ implode(', ', $app['scopes']) }}
-                                    </div>
-                                </div>
-
-                                <div class="flex items-center ms-2">
-                                    <div class="text-sm text-gray-400">
-                                        {{ $app['tokens_count'] }} {{ __('Tokens') }}
-                                    </div>
-
-                                    <button class="cursor-pointer ms-6 text-sm text-red-500" wire:click="confirmAuthorizedAppRevocation('{{ $id }}')">
-                                        {{ __('Revoke') }}
-                                    </button>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </x-slot>
-            </x-action-section>
-        </div>
-
-        <x-section-border />
-    @endif
-
     <!-- Register OAuth App -->
     <x-form-section submit="createOAuthApp">
         <x-slot name="title">
@@ -80,7 +35,7 @@
         </x-slot>
 
         <x-slot name="actions">
-            <x-action-message class="me-3" on="oauth-app-created">
+            <x-action-message class="me-3" on="app-created">
                 {{ __('Registered.') }}
             </x-action-message>
 
@@ -90,7 +45,7 @@
         </x-slot>
     </x-form-section>
 
-    @if ($this->oauthApps->isNotEmpty())
+    @if ($this->apps->isNotEmpty())
         <x-section-border />
 
         <!-- Manage OAuth Apps -->
@@ -107,7 +62,7 @@
                 <!-- OAuth App List -->
                 <x-slot name="content">
                     <div class="space-y-6">
-                        @foreach ($this->oauthApps as $app)
+                        @foreach ($this->apps as $app)
                             <div class="flex items-center justify-between" wire:key="{{ $app->id }}">
                                 <div class="dark:text-white">
                                     {{ $app->name }}
@@ -244,25 +199,4 @@
             </x-button>
         </x-slot>
     </x-dialog-modal>
-
-    <!-- Revoke Authorized App Confirmation Modal -->
-    <x-confirmation-modal wire:model.live="confirmingAuthorizedAppRevocation">
-        <x-slot name="title">
-            {{ __('Revoke Authorized App') }}
-        </x-slot>
-
-        <x-slot name="content">
-            {{ __('Are you sure you would like to revoke this app?') }}
-        </x-slot>
-
-        <x-slot name="footer">
-            <x-secondary-button wire:click="$toggle('confirmingAuthorizedAppRevocation')" wire:loading.attr="disabled">
-                {{ __('Cancel') }}
-            </x-secondary-button>
-
-            <x-danger-button class="ms-3" wire:click="revokeAuthorizedApp" wire:loading.attr="disabled">
-                {{ __('Revoke') }}
-            </x-danger-button>
-        </x-slot>
-    </x-confirmation-modal>
 </div>

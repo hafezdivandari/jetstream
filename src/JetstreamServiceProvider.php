@@ -21,6 +21,7 @@ use Laravel\Jetstream\Http\Livewire\DeleteUserForm;
 use Laravel\Jetstream\Http\Livewire\LogoutOtherBrowserSessionsForm;
 use Laravel\Jetstream\Http\Livewire\NavigationMenu;
 use Laravel\Jetstream\Http\Livewire\OAuthAppManager;
+use Laravel\Jetstream\Http\Livewire\OAuthConnectionManager;
 use Laravel\Jetstream\Http\Livewire\PassportApiTokenManager;
 use Laravel\Jetstream\Http\Livewire\TeamMemberManager;
 use Laravel\Jetstream\Http\Livewire\TwoFactorAuthenticationForm;
@@ -99,6 +100,7 @@ class JetstreamServiceProvider extends ServiceProvider
 
             if (Features::hasOAuthFeatures()) {
                 Livewire::component('oauth.oauth-app-manager', OAuthAppManager::class);
+                Livewire::component('oauth.oauth-connection-manager', OAuthConnectionManager::class);
             }
 
             if (Features::hasTeamFeatures()) {

@@ -1,10 +1,11 @@
 <script setup>
 import OAuthAppManager from '@/Pages/OAuth/Partials/OAuthAppManager.vue';
+import OAuthConnectionManager from "@/Pages/OAuth/Partials/OAuthConnectionManager.vue";
 import AppLayout from '@/Layouts/AppLayout.vue';
 
 defineProps({
-    authorizedApps: Array,
-    oauthApps: Array,
+    connections: Array,
+    apps: Array,
 });
 </script>
 
@@ -18,10 +19,9 @@ defineProps({
 
         <div>
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <OAuthAppManager
-                    :authorized-apps="authorizedApps"
-                    :oauth-apps="oauthApps"
-                />
+                <OAuthConnectionManager :connections="connections" />
+
+                <OAuthAppManager :apps="apps" />
             </div>
         </div>
     </AppLayout>

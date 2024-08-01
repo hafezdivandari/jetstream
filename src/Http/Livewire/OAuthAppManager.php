@@ -2,9 +2,7 @@
 
 namespace Laravel\Jetstream\Http\Livewire;
 
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Date;
 use Illuminate\View\View;
 use Laravel\Passport\Client;
 use Laravel\Passport\Contracts\CreatesClients;
@@ -16,18 +14,11 @@ use Livewire\Component;
 class OAuthAppManager extends Component
 {
     /**
-     * The user's authorized apps.
-     *
-     * @var \Illuminate\Database\Eloquent\Collection<int, array>
-     */
-    public $authorizedApps;
-
-    /**
-     * The user's OAuth apps.
+     * The user's registered OAuth apps.
      *
      * @var \Illuminate\Database\Eloquent\Collection<int, \Laravel\Passport\Client>
      */
-    public $oauthApps;
+    public $apps;
 
     /**
      * Create OAuth app form state.
@@ -52,16 +43,6 @@ class OAuthAppManager extends Component
         'id' => null,
         'secret' => null,
     ];
-
-    /**
-     * Indicates if the application is confirming if a authorized app should be revoked.
-     */
-    public bool $confirmingAuthorizedAppRevocation = false;
-
-    /**
-     * The ID of the authorized app being revoked.
-     */
-    public string $authorizedAppIdBeingRevoked;
 
     /**
      * Indicates if the user is currently managing an OAuth app.
@@ -102,8 +83,7 @@ class OAuthAppManager extends Component
      */
     public function mount(): void
     {
-        $this->loadAuthorizedApps();
-        $this->loadOAuthApps();
+        $this->loadApps();
     }
 
     /**
@@ -125,49 +105,13 @@ class OAuthAppManager extends Component
     }
 
     /**
-     * Load the user's authorized apps.
-     */
-    #[On('authorized-app-revoked')]
-    public function loadAuthorizedApps(): void
-    {
-        $this->authorizedApps = $this->user->tokens()
-            ->with('client')
-            ->where('revoked', false)
-            ->where('expires_at', '>', Date::now())
-            ->get()
-            ->reduce(function (Collection $apps, Token $token) {
-                if ($token->client->revoked || $token->client->personal_access_client) {
-                    return $apps;
-                }
-
-                $app = $apps->get($token->client_id);
-
-                if ($app) {
-                    $app['scopes'] = array_unique(array_merge($app['scopes'], $token->scopes));
-                    $app['tokens_count'] += 1;
-
-                    $apps->put($token->client_id, $app);
-                } else {
-                    $apps->put($token->client_id, [
-                        'client' => $token->client,
-                        'scopes' => $token->scopes,
-                        'tokens_count' => 1,
-                    ]);
-                }
-
-                return $apps;
-            }, collect());
-    }
-
-    /**
      * Load the user's OAuth apps.
      */
-    #[On(['oauth-app-created', 'oauth-app-updated', 'oauth-app-deleted'])]
-    public function loadOAuthApps(): void
+    #[On(['app-created', 'app-updated', 'app-deleted'])]
+    public function loadApps(): void
     {
-        $this->oauthApps = $this->user->clients()
+        $this->apps = $this->user->clients()
             ->where('revoked', false)
-            ->orderBy('name', 'asc')
             ->get();
     }
 
@@ -186,7 +130,7 @@ class OAuthAppManager extends Component
         $this->createOAuthAppForm['redirect_uri'] = '';
         $this->createOAuthAppForm['confidential'] = false;
 
-        $this->dispatch('oauth-app-created');
+        $this->dispatch('app-created');
     }
 
     /**
@@ -211,7 +155,7 @@ class OAuthAppManager extends Component
     {
         $this->managingOAuthApp = true;
 
-        $this->oauthAppBeingManaged = $this->oauthApps->find($clientId);
+        $this->oauthAppBeingManaged = $this->apps->find($clientId);
 
         $this->updateOAuthAppForm['name'] = $this->oauthAppBeingManaged->name;
         $this->updateOAuthAppForm['redirect_uri'] = $this->oauthAppBeingManaged->redirect;
@@ -224,7 +168,7 @@ class OAuthAppManager extends Component
     {
         $updater->update($this->oauthAppBeingManaged, $this->updateOAuthAppForm);
 
-        $this->dispatch('oauth-app-updated');
+        $this->dispatch('app-updated');
 
         $this->managingOAuthApp = false;
     }
@@ -244,37 +188,17 @@ class OAuthAppManager extends Component
      */
     public function deleteOAuthApp(): void
     {
-        $this->oauthApps->find($this->oauthAppIdBeingDeleted)->delete();
+        $app = $this->apps->find($this->oauthAppIdBeingDeleted);
 
-        $this->dispatch('oauth-app-deleted');
+        $app->tokens()->each(function (Token $token) {
+            $token->refreshToken->revoke();
+            $token->revoke();
+        });
+
+        $app->revoke();
+
+        $this->dispatch('app-deleted');
 
         $this->confirmingOAuthAppDeletion = false;
-    }
-
-    /**
-     * Confirm that the given authorized app should be revoked.
-     */
-    public function confirmAuthorizedAppRevocation(string $tokenId): void
-    {
-        $this->confirmingAuthorizedAppRevocation = true;
-
-        $this->authorizedAppIdBeingRevoked = $tokenId;
-    }
-
-    /**
-     * Revoke the authorized app.
-     */
-    public function revokeAuthorizedApp(): void
-    {
-        $this->user->tokens()
-            ->where('client_id', $this->authorizedAppIdBeingRevoked)
-            ->each(function (Token $token) {
-                $token->refreshToken->revoke();
-                $token->revoke();
-            });
-
-        $this->dispatch('authorized-app-revoked');
-
-        $this->confirmingAuthorizedAppRevocation = false;
     }
 }
