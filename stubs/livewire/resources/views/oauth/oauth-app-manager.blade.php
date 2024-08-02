@@ -20,8 +20,8 @@
             <!-- Authorization Redirect URI -->
             <div class="col-span-6 sm:col-span-4">
                 <x-label for="redirect_uri" value="{{ __('Authorization Redirect URI') }}" />
-                <x-input id="redirect_uri" type="url" class="mt-1 block w-full" wire:model="createOAuthAppForm.redirect_uri" autocomplete="off" />
-                <x-input-error for="redirect_uri" bag="createClient" class="mt-2" />
+                <x-input id="redirect_uri" type="url" class="mt-1 block w-full" wire:model="createOAuthAppForm.redirect_uris.0" autocomplete="off" />
+                <x-input-error for="redirect_uris" bag="createClient" class="mt-2" />
             </div>
 
             <!-- Confidential -->
@@ -183,8 +183,8 @@
                 <!-- Authorization Redirect URI -->
                 <div>
                     <x-label for="manage_redirect_uri" value="{{ __('Authorization Redirect URI') }}" />
-                    <x-input id="manage_redirect_uri" type="url" class="mt-1 block w-full" wire:model="updateOAuthAppForm.redirect_uri" autocomplete="off" />
-                    <x-input-error for="redirect_uri" class="mt-2" />
+                    <x-input id="manage_redirect_uri" type="url" class="mt-1 block w-full" wire:model="updateOAuthAppForm.redirect_uris.0" autocomplete="off" />
+                    <x-input-error for="redirect_uris" class="mt-2" />
                 </div>
             </div>
         </x-slot>

@@ -27,7 +27,7 @@ class OAuthAppManager extends Component
      */
     public array $createOAuthAppForm = [
         'name' => '',
-        'redirect_uri' => '',
+        'redirect_uris' => [],
         'confidential' => false,
     ];
 
@@ -65,7 +65,7 @@ class OAuthAppManager extends Component
      */
     public array $updateOAuthAppForm = [
         'name' => '',
-        'redirect_uri' => '',
+        'redirect_uris' => [],
     ];
 
     /**
@@ -127,7 +127,7 @@ class OAuthAppManager extends Component
         );
 
         $this->createOAuthAppForm['name'] = '';
-        $this->createOAuthAppForm['redirect_uri'] = '';
+        $this->createOAuthAppForm['redirect_uris'] = [];
         $this->createOAuthAppForm['confidential'] = false;
 
         $this->dispatch('app-created');
@@ -158,7 +158,7 @@ class OAuthAppManager extends Component
         $this->oauthAppBeingManaged = $this->apps->find($clientId);
 
         $this->updateOAuthAppForm['name'] = $this->oauthAppBeingManaged->name;
-        $this->updateOAuthAppForm['redirect_uri'] = $this->oauthAppBeingManaged->redirect;
+        $this->updateOAuthAppForm['redirect_uris'] = explode(',', $this->oauthAppBeingManaged->redirect);
     }
 
     /**

@@ -21,13 +21,13 @@ const props = defineProps({
 
 const createOAuthAppForm = useForm({
     name: '',
-    redirect_uri: '',
+    redirect_uris: [],
     confidential: false,
 });
 
 const updateOAuthAppForm = useForm({
     name: '',
-    redirect_uri: '',
+    redirect_uris: [],
 });
 
 const deleteOAuthAppForm = useForm({});
@@ -48,7 +48,7 @@ const createOAuthApp = () => {
 
 const manageOAuthApp = (app) => {
     updateOAuthAppForm.name = app.name;
-    updateOAuthAppForm.redirect_uri = app.redirect;
+    updateOAuthAppForm.redirect_uris = app.redirect.split(',');
     oauthAppBeingManaged.value = app;
 };
 
@@ -105,12 +105,12 @@ const deleteOAuthApp = () => {
                     <InputLabel for="redirect_uri" value="Authorization Redirect URI" />
                     <TextInput
                         id="redirect_uri"
-                        v-model="createOAuthAppForm.redirect_uri"
+                        v-model="createOAuthAppForm.redirect_uris[0]"
                         type="url"
                         class="mt-1 block w-full"
                         autocomplete="off"
                     />
-                    <InputError :message="createOAuthAppForm.errors.redirect_uri" class="mt-2" />
+                    <InputError :message="createOAuthAppForm.errors.redirect_uris" class="mt-2" />
                 </div>
 
                 <!-- Confidential -->
@@ -263,12 +263,12 @@ const deleteOAuthApp = () => {
                         <InputLabel for="manage_redirect_uri" value="Authorization Redirect URI" />
                         <TextInput
                             id="manage_redirect_uri"
-                            v-model="updateOAuthAppForm.redirect_uri"
+                            v-model="updateOAuthAppForm.redirect_uris[0]"
                             type="url"
                             class="mt-1 block w-full"
                             autocomplete="off"
                         />
-                        <InputError :message="updateOAuthAppForm.errors.redirect_uri" class="mt-2" />
+                        <InputError :message="updateOAuthAppForm.errors.redirect_uris" class="mt-2" />
                     </div>
                 </div>
             </template>
