@@ -6,10 +6,8 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 
 const props = defineProps({
-    userName: String,
-    userEmail: String,
-    clientId: String,
-    clientName: String,
+    user: Object,
+    client: Object,
     scopes: Array,
     state: String,
     authToken: String,
@@ -18,7 +16,7 @@ const props = defineProps({
 
 const form = useForm({
     state: props.state,
-    client_id: props.clientId,
+    client_id: props.client.id,
     auth_token: props.authToken,
 });
 
@@ -42,12 +40,12 @@ const deny = () => {
         </template>
 
         <div class="mb-4 text-gray-600 text-center">
-            <p><strong>{{ userName }}</strong></p>
-            <p class="text-sm">{{ userEmail }}</p>
+            <p><strong>{{ user.name }}</strong></p>
+            <p class="text-sm">{{ user.email }}</p>
         </div>
 
         <div class="mb-4 text-sm text-gray-600">
-            <strong>{{ clientName }}</strong> is requesting permission to access your account.
+            <strong>{{ client.name }}</strong> is requesting permission to access your account.
         </div>
 
         <div v-if="scopes.length" class="mb-4 text-sm text-gray-600">

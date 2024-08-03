@@ -29,6 +29,7 @@ use Laravel\Jetstream\Http\Livewire\UpdatePasswordForm;
 use Laravel\Jetstream\Http\Livewire\UpdateProfileInformationForm;
 use Laravel\Jetstream\Http\Livewire\UpdateTeamNameForm;
 use Laravel\Jetstream\Http\Middleware\ShareInertiaData;
+use Laravel\Passport\Passport;
 use Livewire\Livewire;
 
 class JetstreamServiceProvider extends ServiceProvider
@@ -51,6 +52,10 @@ class JetstreamServiceProvider extends ServiceProvider
     public function boot()
     {
         Fortify::viewPrefix('auth.');
+
+        if (class_exists(Passport::class)) {
+            Passport::viewPrefix('auth.oauth.');
+        }
 
         $this->configurePublishing();
         $this->configureRoutes();
@@ -242,5 +247,18 @@ class JetstreamServiceProvider extends ServiceProvider
         Fortify::confirmPasswordView(function () {
             return Inertia::render('Auth/ConfirmPassword');
         });
+
+        if (class_exists(Passport::class)) {
+            Passport::authorizationView(function ($params) {
+                return Inertia::render('Auth/OAuth/Authorize', [
+                    'user' => $params['user'],
+                    'client' => $params['client'],
+                    'scopes' => $params['scopes'],
+                    'state' => $params['request']->state,
+                    'authToken' => $params['authToken'],
+                    'promptLoginUrl' => $params['request']->fullUrlWithQuery(['prompt' => 'login']),
+                ]);
+            });
+        }
     }
 }
