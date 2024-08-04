@@ -58,7 +58,7 @@
                 </x-slot>
 
                 <x-slot name="description">
-                    {{ __('You may revoke any of your existing personal access tokens if they are no longer needed.') }}
+                    {{ __('You may delete any of your existing personal access tokens if they are no longer needed.') }}
                 </x-slot>
 
                 <!-- API Token List -->
@@ -85,7 +85,7 @@
                                     </div>
 
                                     <button class="cursor-pointer ms-6 text-sm text-red-500" wire:click="confirmApiTokenDeletion('{{ $token->id }}')">
-                                        {{ __('Revoke') }}
+                                        {{ __('Delete') }}
                                     </button>
                                 </div>
                             </div>
@@ -121,14 +121,14 @@
         </x-slot>
     </x-dialog-modal>
 
-    <!-- Revoke Token Confirmation Modal -->
+    <!-- Delete Token Confirmation Modal -->
     <x-confirmation-modal wire:model.live="confirmingApiTokenDeletion">
         <x-slot name="title">
-            {{ __('Revoke API Token') }}
+            {{ __('Delete API Token') }}
         </x-slot>
 
         <x-slot name="content">
-            {{ __('Are you sure you would like to revoke this API token?') }}
+            {{ __('Are you sure you would like to delete this API token?') }}
         </x-slot>
 
         <x-slot name="footer">
@@ -137,7 +137,7 @@
             </x-secondary-button>
 
             <x-danger-button class="ms-3" wire:click="deleteApiToken" wire:loading.attr="disabled">
-                {{ __('Revoke') }}
+                {{ __('Delete') }}
             </x-danger-button>
         </x-slot>
     </x-confirmation-modal>

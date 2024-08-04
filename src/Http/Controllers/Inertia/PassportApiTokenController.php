@@ -66,7 +66,7 @@ class PassportApiTokenController extends Controller
      */
     public function destroy(Request $request, $tokenId)
     {
-        $request->user()->tokens()->find($tokenId)->revoke();
+        $request->user()->tokens()->find($tokenId)->delete();
 
         return back(303);
     }

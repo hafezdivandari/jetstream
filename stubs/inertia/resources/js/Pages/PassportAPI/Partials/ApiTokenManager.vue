@@ -122,7 +122,7 @@ const deleteApiToken = () => {
                     </template>
 
                     <template #description>
-                        You may revoke any of your existing personal access tokens if they are no longer needed.
+                        You may delete any of your existing personal access tokens if they are no longer needed.
                     </template>
 
                     <!-- API Token List -->
@@ -148,7 +148,7 @@ const deleteApiToken = () => {
                                     </div>
 
                                     <button class="cursor-pointer ms-6 text-sm text-red-500" @click="confirmApiTokenDeletion(token)">
-                                        Revoke
+                                        Delete
                                     </button>
                                 </div>
                             </div>
@@ -181,14 +181,14 @@ const deleteApiToken = () => {
             </template>
         </DialogModal>
 
-        <!-- Revoke Token Confirmation Modal -->
+        <!-- Delete Token Confirmation Modal -->
         <ConfirmationModal :show="apiTokenBeingDeleted != null" @close="apiTokenBeingDeleted = null">
             <template #title>
-                Revoke API Token
+                Delete API Token
             </template>
 
             <template #content>
-                Are you sure you would like to revoke this API token?
+                Are you sure you would like to delete this API token?
             </template>
 
             <template #footer>
@@ -202,7 +202,7 @@ const deleteApiToken = () => {
                     :disabled="deleteApiTokenForm.processing"
                     @click="deleteApiToken"
                 >
-                    Revoke
+                    Delete
                 </DangerButton>
             </template>
         </ConfirmationModal>

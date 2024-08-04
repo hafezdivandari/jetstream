@@ -125,7 +125,7 @@ class PassportApiTokenManager extends Component
      */
     public function deleteApiToken(): void
     {
-        $this->tokens->find($this->apiTokenIdBeingDeleted)->revoke();
+        $this->tokens->find($this->apiTokenIdBeingDeleted)->delete();
 
         $this->dispatch('token-deleted');
 
