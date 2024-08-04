@@ -191,11 +191,11 @@ class OAuthAppManager extends Component
         $app = $this->apps->find($this->oauthAppIdBeingDeleted);
 
         $app->tokens()->each(function (Token $token) {
-            $token->refreshToken->revoke();
-            $token->revoke();
+            $token->refreshToken()->delete();
+            $token->delete();
         });
 
-        $app->revoke();
+        $app->delete();
 
         $this->dispatch('app-deleted');
 

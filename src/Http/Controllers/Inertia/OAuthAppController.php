@@ -88,11 +88,11 @@ class OAuthAppController extends Controller
         $client = $request->user()->clients()->find($clientId);
 
         $client->tokens()->each(function (Token $token) {
-            $token->refreshToken->revoke();
-            $token->revoke();
+            $token->refreshToken()->delete();
+            $token->delete();
         });
 
-        $client->revoke();
+        $client->delete();
 
         return back(303);
     }

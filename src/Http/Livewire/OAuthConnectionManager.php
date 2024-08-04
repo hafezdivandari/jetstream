@@ -92,8 +92,8 @@ class OAuthConnectionManager extends Component
         $this->user->tokens()
             ->where('client_id', $this->connectionClientIdBeingDeleted)
             ->each(function (Token $token) {
-                $token->refreshToken->revoke();
-                $token->revoke();
+                $token->refreshToken()->delete();
+                $token->delete();
             });
 
         $this->dispatch('connection-deleted');

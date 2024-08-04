@@ -20,8 +20,8 @@ class OAuthConnectionController extends Controller
         $request->user()->tokens()
             ->where('client_id', $clientId)
             ->each(function (Token $token) {
-                $token->refreshToken->revoke();
-                $token->revoke();
+                $token->refreshToken()->delete();
+                $token->delete();
             });
 
         return back(303);
