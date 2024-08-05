@@ -69,9 +69,10 @@ class OAuthConnectionManager extends Component
             ->groupBy('client_id')
             ->map(fn ($tokens) => [
                 'client' => $tokens->first()->client,
-                'scopes' => $tokens->pluck('scopes')->flatten()->unique()->all(),
+                'scopes' => $tokens->pluck('scopes')->flatten()->unique()->values()->all(),
                 'tokens_count' => $tokens->count(),
-            ]);
+            ])
+            ->values();
     }
 
     /**

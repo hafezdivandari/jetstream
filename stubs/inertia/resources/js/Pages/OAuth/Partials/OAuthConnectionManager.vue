@@ -45,7 +45,7 @@ const deleteConnection = () => {
                     <!-- OAuth Connection List -->
                     <template #content>
                         <div class="space-y-6">
-                            <div v-for="(connection, id) in connections" :key="id" class="flex items-center justify-between">
+                            <div v-for="connection in connections" :key="connection.client.id" class="flex items-center justify-between">
                                 <div>
                                     <div>
                                         {{ connection.client.name }}

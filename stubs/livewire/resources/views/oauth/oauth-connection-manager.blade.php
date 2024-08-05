@@ -14,8 +14,8 @@
                 <!-- OAuth Connection List -->
                 <x-slot name="content">
                     <div class="space-y-6">
-                        @foreach ($this->connections as $id => $connection)
-                            <div class="flex items-center justify-between" wire:key="{{ $id }}">
+                        @foreach ($this->connections as $connection)
+                            <div class="flex items-center justify-between" wire:key="{{ $connection['client']->id }}">
                                 <div>
                                     <div>
                                         {{ $connection['client']->name }}
@@ -30,7 +30,7 @@
                                         {{ $connection['tokens_count'] }} {{ __('Tokens') }}
                                     </div>
 
-                                    <button class="cursor-pointer ms-6 text-sm text-red-500" wire:click="confirmConnectionDeletion('{{ $id }}')">
+                                    <button class="cursor-pointer ms-6 text-sm text-red-500" wire:click="confirmConnectionDeletion('{{ $connection['client']->id }}')">
                                         {{ __('Delete') }}
                                     </button>
                                 </div>
