@@ -456,7 +456,6 @@ class Jetstream
         return app()->singleton(DeletesUsers::class, $class);
     }
 
-
     /**
      * Register a class / callback that should be used to create OAuth clients.
      *
