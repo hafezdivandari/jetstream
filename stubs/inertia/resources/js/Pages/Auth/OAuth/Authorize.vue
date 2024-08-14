@@ -67,7 +67,7 @@ const deny = () => {
                 </SecondaryButton>
             </form>
 
-            <Link :href="route(route().current(), {...route().params, prompt: 'login'})"
+            <Link :href="route('passport.authorizations.authorize', {...route().params, prompt: 'login'})"
                   class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
                 Log into another account
             </Link>
