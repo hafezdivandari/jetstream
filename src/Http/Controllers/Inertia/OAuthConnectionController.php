@@ -15,7 +15,7 @@ class OAuthConnectionController extends Controller
      * @param  string  $clientId
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(Request $request, $clientId)
+    public function destroy(Request $request, string $clientId)
     {
         $request->user()->tokens()
             ->where('client_id', $clientId)

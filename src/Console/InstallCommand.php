@@ -197,6 +197,10 @@ class InstallCommand extends Command implements PromptsForMissingInput
         (new Filesystem)->ensureDirectoryExists(resource_path('views/layouts'));
         (new Filesystem)->ensureDirectoryExists(resource_path('views/profile'));
 
+        if ($this->option('oauth')) {
+            (new Filesystem)->ensureDirectoryExists(app_path('Actions/Passport'));
+        }
+
         (new Filesystem)->deleteDirectory(resource_path('sass'));
 
         // Terms Of Service / Privacy Policy...
@@ -221,6 +225,11 @@ class InstallCommand extends Command implements PromptsForMissingInput
         copy(__DIR__.'/../../stubs/app/Actions/Fortify/CreateNewUser.php', app_path('Actions/Fortify/CreateNewUser.php'));
         copy(__DIR__.'/../../stubs/app/Actions/Fortify/UpdateUserProfileInformation.php', app_path('Actions/Fortify/UpdateUserProfileInformation.php'));
         copy(__DIR__.'/../../stubs/app/Actions/Jetstream/DeleteUser.php', app_path('Actions/Jetstream/DeleteUser.php'));
+
+        if ($this->option('oauth')) {
+            copy(__DIR__.'/../../stubs/app/Actions/Passport/CreateClient.php', app_path('Actions/Passport/CreateClient.php'));
+            copy(__DIR__.'/../../stubs/app/Actions/Passport/UpdateClient.php', app_path('Actions/Passport/UpdateClient.php'));
+        }
 
         // Components...
         (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/livewire/resources/views/components', resource_path('views/components'));
@@ -398,6 +407,10 @@ EOF;
         (new Filesystem)->ensureDirectoryExists(resource_path('views'));
         (new Filesystem)->ensureDirectoryExists(resource_path('markdown'));
 
+        if ($this->option('oauth')) {
+            (new Filesystem)->ensureDirectoryExists(app_path('Actions/Passport'));
+        }
+
         (new Filesystem)->deleteDirectory(resource_path('sass'));
 
         // Terms Of Service / Privacy Policy...
@@ -435,6 +448,11 @@ EOF;
         copy(__DIR__.'/../../stubs/app/Actions/Fortify/CreateNewUser.php', app_path('Actions/Fortify/CreateNewUser.php'));
         copy(__DIR__.'/../../stubs/app/Actions/Fortify/UpdateUserProfileInformation.php', app_path('Actions/Fortify/UpdateUserProfileInformation.php'));
         copy(__DIR__.'/../../stubs/app/Actions/Jetstream/DeleteUser.php', app_path('Actions/Jetstream/DeleteUser.php'));
+
+        if ($this->option('oauth')) {
+            copy(__DIR__.'/../../stubs/app/Actions/Passport/CreateClient.php', app_path('Actions/Passport/CreateClient.php'));
+            copy(__DIR__.'/../../stubs/app/Actions/Passport/UpdateClient.php', app_path('Actions/Passport/UpdateClient.php'));
+        }
 
         // Blade Views...
         copy(__DIR__.'/../../stubs/inertia/resources/views/app.blade.php', resource_path('views/app.blade.php'));

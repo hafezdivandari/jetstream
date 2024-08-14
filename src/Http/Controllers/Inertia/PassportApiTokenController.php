@@ -64,7 +64,7 @@ class PassportApiTokenController extends Controller
      * @param  string  $tokenId
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(Request $request, $tokenId)
+    public function destroy(Request $request, string $tokenId)
     {
         $request->user()->tokens()->find($tokenId)->delete();
 

@@ -4,9 +4,9 @@ namespace Laravel\Jetstream\Http\Livewire;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Laravel\Jetstream\Contracts\CreatesOAuthClients;
+use Laravel\Jetstream\Contracts\UpdatesOAuthClients;
 use Laravel\Passport\Client;
-use Laravel\Passport\Contracts\CreatesClients;
-use Laravel\Passport\Contracts\UpdatesClients;
 use Laravel\Passport\Token;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -118,12 +118,12 @@ class OAuthAppManager extends Component
     /**
      * Create a new OAuth Client.
      */
-    public function createOAuthApp(CreatesClients $creator): void
+    public function createOAuthApp(CreatesOAuthClients $creator): void
     {
         $this->resetErrorBag();
 
         $this->displayClientCredentials(
-            $creator->create($this->createOAuthAppForm)
+            $creator->create($this->user, $this->createOAuthAppForm)
         );
 
         $this->createOAuthAppForm['name'] = '';
@@ -164,9 +164,9 @@ class OAuthAppManager extends Component
     /**
      * Update the OAuth app.
      */
-    public function updateOAuthApp(UpdatesClients $updater): void
+    public function updateOAuthApp(UpdatesOAuthClients $updater): void
     {
-        $updater->update($this->oauthAppBeingManaged, $this->updateOAuthAppForm);
+        $updater->update($this->user, $this->oauthAppBeingManaged, $this->updateOAuthAppForm);
 
         $this->dispatch('app-updated');
 

@@ -24,6 +24,11 @@ class JetstreamServiceProvider extends ServiceProvider
         $this->configurePermissions();
 
         Jetstream::deleteUsersUsing(DeleteUser::class);
+
+        if (Jetstream::hasOAuthFeatures()) {
+            Jetstream::createOAuthClientsUsing(\App\Actions\Passport\CreateClient::class);
+            Jetstream::updateOAuthClientsUsing(\App\Actions\Passport\UpdateClient::class);
+        }
     }
 
     /**

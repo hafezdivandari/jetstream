@@ -5,10 +5,10 @@ namespace Laravel\Jetstream\Http\Controllers\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Date;
+use Laravel\Jetstream\Contracts\CreatesOAuthClients;
+use Laravel\Jetstream\Contracts\UpdatesOAuthClients;
 use Laravel\Jetstream\Jetstream;
 use Laravel\Passport\Client;
-use Laravel\Passport\Contracts\CreatesClients;
-use Laravel\Passport\Contracts\UpdatesClients;
 use Laravel\Passport\Token;
 
 class OAuthAppController extends Controller
@@ -53,7 +53,7 @@ class OAuthAppController extends Controller
      */
     public function store(Request $request)
     {
-        $client = app(CreatesClients::class)->create($request->all());
+        $client = app(CreatesOAuthClients::class)->create($request->user(), $request->all());
 
         return back()->with('flash', [
             'client_id' => $client->id,
@@ -68,11 +68,11 @@ class OAuthAppController extends Controller
      * @param  string  $clientId
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, $clientId)
+    public function update(Request $request, string $clientId)
     {
         $client = $request->user()->clients()->findOrFail($clientId);
 
-        app(UpdatesClients::class)->update($client, $request->all());
+        app(UpdatesOAuthClients::class)->update($request->user(), $client, $request->all());
 
         return back(303);
     }
@@ -84,9 +84,9 @@ class OAuthAppController extends Controller
      * @param  string  $clientId
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(Request $request, $clientId)
+    public function destroy(Request $request, string $clientId)
     {
-        $client = $request->user()->clients()->find($clientId);
+        $client = $request->user()->clients()->findOrFail($clientId);
 
         $client->tokens()->each(function (Token $token) {
             $token->refreshToken()->delete();
