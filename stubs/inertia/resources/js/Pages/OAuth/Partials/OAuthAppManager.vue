@@ -48,7 +48,7 @@ const createOAuthApp = () => {
 
 const manageOAuthApp = (app) => {
     updateOAuthAppForm.name = app.name;
-    updateOAuthAppForm.redirect_uris = app.redirect.split(',');
+    updateOAuthAppForm.redirect_uris = app.redirect_uris;
     oauthAppBeingManaged.value = app;
 };
 

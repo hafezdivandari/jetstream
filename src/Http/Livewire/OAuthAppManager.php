@@ -158,7 +158,7 @@ class OAuthAppManager extends Component
         $this->oauthAppBeingManaged = $this->apps->find($clientId);
 
         $this->updateOAuthAppForm['name'] = $this->oauthAppBeingManaged->name;
-        $this->updateOAuthAppForm['redirect_uris'] = explode(',', $this->oauthAppBeingManaged->redirect);
+        $this->updateOAuthAppForm['redirect_uris'] = $this->oauthAppBeingManaged->redirect_uris;
     }
 
     /**
