@@ -27,7 +27,7 @@ class OAuthAppController extends Controller
                 ->where('revoked', false)
                 ->where('expires_at', '>', Date::now())
                 ->get()
-                ->reject(fn (Token $token) => $token->client->revoked || $token->client->hasGrantType('personal_access'))
+                ->reject(fn (Token $token) => $token->client->revoked || $token->client->firstParty())
                 ->groupBy('client_id')
                 ->map(fn ($tokens) => [
                     'client' => $tokens->first()->client,
