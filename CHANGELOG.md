@@ -1,6 +1,10 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/jetstream/compare/v5.1.4...5.x)
+## [Unreleased](https://github.com/laravel/jetstream/compare/v5.1.5...5.x)
+
+## [v5.1.5](https://github.com/laravel/jetstream/compare/v5.1.4...v5.1.5) - 2024-08-08
+
+* Update banner.blade.php by [@eneadrian](https://github.com/eneadrian) in https://github.com/laravel/jetstream/pull/1524
 
 ## [v5.1.4](https://github.com/laravel/jetstream/compare/v5.1.3...v5.1.4) - 2024-07-10
 
