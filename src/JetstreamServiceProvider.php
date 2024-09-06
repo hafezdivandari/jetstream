@@ -249,9 +249,7 @@ class JetstreamServiceProvider extends ServiceProvider
         });
 
         if (class_exists(Passport::class)) {
-            Passport::authorizationView(function ($params) {
-                return Inertia::render('Auth/OAuth/Authorize', $params);
-            });
+            Passport::authorizationView(fn ($params) => Inertia::render('Auth/OAuth/Authorize', $params));
         }
     }
 }
