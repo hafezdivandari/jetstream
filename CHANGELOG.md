@@ -1,6 +1,15 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/jetstream/compare/v5.1.5...5.x)
+## [Unreleased](https://github.com/laravel/jetstream/compare/v5.2.0...5.x)
+
+## [v5.2.0](https://github.com/laravel/jetstream/compare/v5.1.5...v5.2.0) - 2024-09-09
+
+* Fix formatting by [@coreyhn](https://github.com/coreyhn) in https://github.com/laravel/jetstream/pull/1527
+* [5.x] Eagerly prefetch assets by [@timacdonald](https://github.com/timacdonald) in https://github.com/laravel/jetstream/pull/1528
+* [5.x] Use Pest as default testing framework by [@timacdonald](https://github.com/timacdonald) in https://github.com/laravel/jetstream/pull/1530
+* Uses pest 3 by [@nunomaduro](https://github.com/nunomaduro) in https://github.com/laravel/jetstream/pull/1531
+
+**Full Changelog**: https://github.com/laravel/jetstream/compare/v5.1.5...v5.2.0
 
 ## [v5.1.5](https://github.com/laravel/jetstream/compare/v5.1.4...v5.1.5) - 2024-08-08
 
