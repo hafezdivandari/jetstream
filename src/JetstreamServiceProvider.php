@@ -250,6 +250,8 @@ class JetstreamServiceProvider extends ServiceProvider
 
         if (class_exists(Passport::class)) {
             Passport::authorizationView(fn ($params) => Inertia::render('Auth/OAuth/Authorize', $params));
+            // Passport::deviceAuthorizationView(fn ($params) => Inertia::render('Auth/OAuth/Device/Authorize', $params));
+            // Passport::deviceUserCodeView(fn ($params) => Inertia::render('Auth/OAuth/Device/UserCode', $params));
         }
     }
 }
